@@ -1,0 +1,119 @@
+body {
+  position: relative;
+  top: 0;
+  right: 0;
+  left: 0.5;
+
+  display: flex;
+  display: block;
+
+  content: "111";
+  text-align: center ;
+  text-align: center;
+
+  background-color: #ff0000;
+
+  div {
+    text-decoration: none;
+    
+    @media (max-width: 900px) {
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+  }
+
+  @media (min-width: 601px) {
+    a {
+      text-decoration: none;
+
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+  }
+    @media (min-width: 901px) {
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+  @media (max-width: 600px) {
+    a {
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+  }
+}
+
+h1 {
+  color: white;
+
+      @media (min-width: 901px) {
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+
+  @media (min-width: 601px) {
+    color: green;
+  }
+
+  @media (max-width: 600px) {
+    color: red;
+  }
+}
+
+h2 {
+  color: white;
+
+  @media (min-width: 601px) {
+    color: green;
+  }
+
+  @media (max-width: 600px) {
+    color: red;
+  }
+}
+
+
+h3 {
+  color: white;
+    @media (min-width: 901px) {
+      &:hover,
+      &:focus {
+        color: yellow
+      }
+    }
+
+  @media (min-width: 601px) {
+    color: green;
+  }
+
+  @media (max-width: 600px) {
+    color: red;
+  }
+}
+
+
+h4 {
+  color: white;
+
+  @media (min-width: 601px) {
+    color: green;
+  }
+
+  @media (max-width: 600px) {
+    color: red;
+  }
+}
+
