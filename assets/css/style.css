@@ -34,15 +34,6 @@ h4 {
   color: white;
 }
 
-@media (max-width: 900px) {
-  body div {
-    text-decoration: underline;
-  }
-  body div:hover, body div:focus {
-    color: yellow;
-  }
-}
-
 @media (min-width: 601px) {
   body a {
     text-decoration: none;
@@ -72,6 +63,15 @@ h4 {
     color: yellow;
   }
   h3:hover, h3:focus {
+    color: yellow;
+  }
+}
+
+@media (max-width: 900px) {
+  body div {
+    text-decoration: underline;
+  }
+  body div:hover, body div:focus {
     color: yellow;
   }
 }

@@ -27,7 +27,9 @@ const plugins = [
     ],
     cascade: true
   }),
-  mqpacker()
+  mqpacker({
+    sort: true
+  })
 ];
 
 function scss() {
