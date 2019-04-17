@@ -22,14 +22,12 @@ const path = {
 const plugins = [
   autoprefixer({
     browsers: [
-      'last 15 versions',
+      'last 5 versions',
       '> 0.1%'
     ],
     cascade: true
   }),
-  mqpacker({
-    sort: true
-  })
+  mqpacker({sort: true})
 ];
 
 function scss() {
@@ -84,12 +82,7 @@ function scssMin() {
 function comb() {
   return src(path.scssFiles).
     pipe(csscomb()).
-    on(
-      'error',
-      notify.onError(function (error) {
-        return 'File: ' + error.message;
-      })
-    ).
+    on('error', notify.onError((error) => `File: ${error.message}`)).
     pipe(dest(path.scssFolder));
 }
 
