@@ -20,13 +20,7 @@ const path = {
 };
 
 const plugins = [
-  autoprefixer({
-    browsers: [
-      'last 5 versions',
-      '> 0.1%'
-    ],
-    cascade: true
-  }),
+  autoprefixer({overrideBrowserslist: ['last 5 versions', '> 1%'], cascade: true}),
   mqpacker({sort: true})
 ];
 

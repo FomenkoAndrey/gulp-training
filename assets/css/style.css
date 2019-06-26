@@ -4,7 +4,6 @@ body {
   right: 0;
   left: 0.5;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   display: block;
