@@ -88,18 +88,18 @@ h2 {
 
 h3 {
   color: white;
-    @media (min-width: 901px) {
+    @media (min-width: 701px) {
       &:hover,
       &:focus {
         color: yellow
       }
     }
 
-  @media (min-width: 601px) {
+  @media (min-width: 901px) {
     color: green;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
     color: red;
   }
 }
@@ -112,7 +112,20 @@ h4 {
     color: green;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
+    color: red;
+  }
+}
+
+
+h4 {
+  color: white;
+
+  @media (min-width: 601px) and (max-width: 800px) {
+    color: green;
+  }
+
+  @media (min-width: 701px) and (max-width: 900px) {
     color: red;
   }
 }

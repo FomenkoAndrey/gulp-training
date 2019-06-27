@@ -33,6 +33,10 @@ h4 {
   color: white;
 }
 
+h4 {
+  color: white;
+}
+
 @media (min-width: 601px) {
   body a {
     text-decoration: none;
@@ -46,11 +50,26 @@ h4 {
   h2 {
     color: green;
   }
-  h3 {
-    color: green;
-  }
   h4 {
     color: green;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 800px) {
+  h4 {
+    color: green;
+  }
+}
+
+@media (min-width: 701px) {
+  h3:hover, h3:focus {
+    color: yellow;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  h4 {
+    color: red;
   }
 }
 
@@ -61,8 +80,8 @@ h4 {
   h1:hover, h1:focus {
     color: yellow;
   }
-  h3:hover, h3:focus {
-    color: yellow;
+  h3 {
+    color: green;
   }
 }
 
@@ -72,6 +91,18 @@ h4 {
   }
   body div:hover, body div:focus {
     color: yellow;
+  }
+}
+
+@media (max-width: 800px) {
+  h4 {
+    color: red;
+  }
+}
+
+@media (max-width: 700px) {
+  h3 {
+    color: red;
   }
 }
 
@@ -86,12 +117,6 @@ h4 {
     color: red;
   }
   h2 {
-    color: red;
-  }
-  h3 {
-    color: red;
-  }
-  h4 {
     color: red;
   }
 }
