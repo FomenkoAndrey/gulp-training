@@ -8,6 +8,7 @@ const postcss = require('gulp-postcss');
 const csscomb = require('gulp-csscomb');
 const autoprefixer = require('autoprefixer');
 const mqpacker = require('css-mqpacker');
+const sortCSSmq = require('sort-css-media-queries');
 
 const path = {
   scssFolder: './assets/scss/',
@@ -20,8 +21,14 @@ const path = {
 };
 
 const plugins = [
-  autoprefixer({overrideBrowserslist: ['last 5 versions', '> 1%'], cascade: true}),
-  mqpacker({sort: true})
+  autoprefixer({
+    overrideBrowserslist: [
+      'last 5 versions',
+      '> 1%'
+    ],
+    cascade: true
+  }),
+  mqpacker({sort: sortCSSmq})
 ];
 
 function scss() {
