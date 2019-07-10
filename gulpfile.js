@@ -2,8 +2,6 @@ const {task, series, parallel, src, dest, watch} = require('gulp');
 const sass = require('gulp-sass');
 const browserSync = require('browser-sync');
 const notify = require('gulp-notify');
-const cssnano = require('cssnano');
-const rename = require('gulp-rename');
 const postcss = require('gulp-postcss');
 const csscomb = require('gulp-csscomb');
 const autoprefixer = require('autoprefixer');
@@ -55,31 +53,6 @@ function scssDev() {
     pipe(browserSync.reload({stream: true}));
 }
 
-function cssMin() {
-  const pluginsExtended = plugins.concat([cssnano({preset: 'default'})]);
-
-  return src(path.cssFile).
-    pipe(postcss(pluginsExtended)).
-    pipe(rename({suffix: '.min'})).
-    pipe(dest(path.cssFolder)).
-    pipe(browserSync.reload({stream: true}));
-}
-
-function scssMin() {
-  const pluginsExtended = plugins.concat([cssnano({preset: 'default'})]);
-
-  return src(path.scssFile).
-    pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)).
-    pipe(postcss(pluginsExtended)).
-    pipe(rename({suffix: '.min'})).
-    pipe(dest(path.cssFolder)).
-    pipe(notify({
-      message: 'Compiled!',
-      sound: false
-    })).
-    pipe(browserSync.reload({stream: true}));
-}
-
 function comb() {
   return src(path.scssFiles).
     pipe(csscomb()).
@@ -100,13 +73,12 @@ async function sync() {
 
 function watchFiles() {
   syncInit();
-  watch(path.scssFiles, scss);
+  watch(path.scssFiles, series(scss));
   watch(path.htmlFiles, sync);
   watch(path.jsFiles, sync);
 }
 
-task('comb', comb);
-task('scss', series(scss, cssMin));
-task('min', scssMin);
-task('dev', scssDev);
+task('comb', series(comb));
+task('scss', series(scss));
+task('dev', series(scssDev));
 task('watch', watchFiles);
