@@ -13,6 +13,7 @@ const path = {
   scssFiles: './assets/scss/**/*.scss',
   scssFile: './assets/scss/style.scss',
   cssFolder: './assets/css/',
+  cssFiles: './assets/css/*.css',
   cssFile: './assets/css/style.css',
   htmlFiles: './*.html',
   jsFiles: './assets/js/**/*.js'
@@ -76,6 +77,7 @@ function watchFiles() {
   watch(path.scssFiles, series(scss));
   watch(path.htmlFiles, sync);
   watch(path.jsFiles, sync);
+  // watch(path.cssFiles, sync);
 }
 
 task('comb', series(comb));
