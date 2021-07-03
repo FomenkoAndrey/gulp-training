@@ -4,6 +4,7 @@ body {
   right: 0;
   left: 0.5;
   display: -webkit-box;
+  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   display: block;
@@ -12,7 +13,6 @@ body {
   text-align: center;
   background-color: #ff00ff;
 }
-
 body div {
   text-decoration: none;
 }

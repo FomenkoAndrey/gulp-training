@@ -1,14 +1,13 @@
 const {task, series, parallel, src, dest, watch} = require('gulp');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const browserSync = require('browser-sync');
-const notify = require('gulp-notify');
 const postcss = require('gulp-postcss');
 const csscomb = require('gulp-csscomb');
 const autoprefixer = require('autoprefixer');
 const mqpacker = require('css-mqpacker');
 const sortCSSmq = require('sort-css-media-queries');
 
-const path = {
+const PATH = {
   scssFolder: './assets/scss/',
   scssFiles: './assets/scss/**/*.scss',
   scssFile: './assets/scss/style.scss',
@@ -19,11 +18,11 @@ const path = {
   jsFiles: './assets/js/**/*.js'
 };
 
-const plugins = [
+const PLUGINS = [
   autoprefixer({
     overrideBrowserslist: [
       'last 5 versions',
-      '> 1%'
+      '> 0.1%'
     ],
     cascade: true
   }),
@@ -31,34 +30,25 @@ const plugins = [
 ];
 
 function scss() {
-  return src(path.scssFile).
+  return src(PATH.scssFile).
     pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)).
-    pipe(postcss(plugins)).
-    pipe(dest(path.cssFolder)).
-    pipe(notify({
-      message: 'Compiled!',
-      sound: false
-    })).
-    pipe(browserSync.reload({stream: true}));
+    pipe(postcss(PLUGINS)).
+    pipe(dest(PATH.cssFolder)).
+    pipe(browserSync.stream());
 }
 
 function scssDev() {
-  return src(path.scssFile, {sourcemaps: true}).
+  return src(PATH.scssFile, {sourcemaps: true}).
     pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)).
-    pipe(postcss(plugins)).
-    pipe(dest(path.cssFolder, {sourcemaps: true})).
-    pipe(notify({
-      message: 'Compiled!',
-      sound: false
-    })).
-    pipe(browserSync.reload({stream: true}));
+    pipe(postcss(PLUGINS)).
+    pipe(dest(PATH.cssFolder, {sourcemaps: true})).
+    pipe(browserSync.stream());
 }
 
 function comb() {
-  return src(path.scssFiles).
+  return src(PATH.scssFiles).
     pipe(csscomb()).
-    on('error', notify.onError((error) => `File: ${error.message}`)).
-    pipe(dest(path.scssFolder));
+    pipe(dest(PATH.scssFolder));
 }
 
 function syncInit() {
@@ -74,10 +64,10 @@ async function sync() {
 
 function watchFiles() {
   syncInit();
-  watch(path.scssFiles, series(scss));
-  watch(path.htmlFiles, sync);
-  watch(path.jsFiles, sync);
-  // watch(path.cssFiles, sync);
+  watch(PATH.scssFiles, series(scss));
+  watch(PATH.htmlFiles, sync);
+  watch(PATH.jsFiles, sync);
+  // watch(PATH.cssFiles, sync);
 }
 
 task('comb', series(comb));
