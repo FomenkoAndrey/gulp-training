@@ -47,8 +47,17 @@ npm install gulp-cli -g
 
   > **ВАЖНО**
   >
-  > Не используйте **PowerShell**. Работа с этой консолью приводит к ошибкам работы сценариев. Как минимум, используйте **CMD** в качестве терминала VSCode.
-  > [Инструкция по интеграции **CMD** в VSCode](https://code.visualstudio.com/docs/editor/integrated-terminal).
+  > Не используйте **PowerShell**!
+  >
+  > Работа с этой консолью приводит к ошибкам работы сценариев.
+  > Как минимум, используйте **CMD** в качестве терминала VSCode.
+  > [Инструкция по интеграции **CMD** в VSCode](https://stackoverflow.com/questions/46107955/open-cmd-in-the-visual-studio-code-terminal?rq=1).
+  >
+  > Ваша задача следовать инструкции и добавить в **settings.json** следующую строку:
+  >
+  > ```
+  > "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe"
+  > ```
   >
   > Рекомендуется работать с терминалом VSCode открытого проекта.
   >
