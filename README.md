@@ -40,7 +40,7 @@ npm -v
 
 > Работа с консолью **PowerShell** приводит к ошибкам сценариев.  
 > Как минимум, используйте **Cmd** в качестве терминала VSCode.
-> [Инструкция по интеграции **Cmd** в VSCode](https://stackoverflow.com/questions/46107955/open-cmd-in-the-visual-studio-code-terminal?rq=1).  
+> [Инструкция по интеграции **Cmd** в VSCode](https://dev.to/andrewriveradev/how-to-setup-cmder-in-vscode-in-2021-3nkc).  
 > _Вместо cmd можно воспользоваться GitBush или Cmder._
 >
 > Ваша задача следовать инструкции и добавить в **settings.json** следующую строку:
