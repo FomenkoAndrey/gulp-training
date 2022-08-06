@@ -1,13 +1,6 @@
-@use "presets" as *;
-@use "common";
+@import 'normalize';
 
-body {
-  background-color: $color-primary;
-  color: $color-accent;
-}
+@import 'presets/skins';
+@import 'presets/variables';
 
-div {
-  width: $ul;
-  padding-left: $gap;
-  padding-right: $gap;
-}
+@import 'common';
