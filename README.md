@@ -56,6 +56,8 @@ npm install gulp-cli -g
 **ВАЖНО! Для MAC!**  
 Для **mac** нужно прописывать команду через **sudo**.
 
+![gulp-cli install via sudo in mac](assets/img/vscode-cmd/mac_sudo.png)
+
 # 4. Установите плагины для работы gulp
 
 ## 4.1. Разместите в корне вашего проекта файлы **gulpfile.js**, **package.json** и **.csscomb.json**
