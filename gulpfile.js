@@ -13,7 +13,7 @@ const option = process.argv[3];
 const PATH = {
   scssFolder: './assets/scss/',
   scssFiles: './assets/scss/**/*.scss',
-  scssFile: './assets/scss/style.scss',
+  scssRoot: './assets/scss/style.scss',
   cssFolder: './assets/css/',
   cssFiles: './assets/css/*.css',
   cssFile: './assets/css/style.css',
@@ -37,7 +37,7 @@ const PLUGINS = [
 ];
 
 function scss() {
-  return src(PATH.scssFile)
+  return src(PATH.scssRoot)
     .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
     .pipe(postcss(PLUGINS))
     .pipe(csscomb())
@@ -45,9 +45,13 @@ function scss() {
     .pipe(browserSync.stream());
 }
 function scssDev() {
-  return src(PATH.scssFile, {sourcemaps: true})
+  const pluginsForDevMode = [...PLUGINS]
+
+  pluginsForDevMode.splice(1,1)
+
+  return src(PATH.scssRoot, {sourcemaps: true})
     .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-    .pipe(postcss(PLUGINS))
+    .pipe(postcss(pluginsForDevMode))
     .pipe(dest(PATH.cssFolder, {sourcemaps: true}))
     .pipe(browserSync.stream());
 }
@@ -108,7 +112,6 @@ function createStructure() {
       require('fs').writeFileSync(file[i][j], '');
       console.log(file[i][j]);
     }
-
 
     resolve(true);
   }, 1000));
