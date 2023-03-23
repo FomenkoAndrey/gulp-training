@@ -40,7 +40,7 @@ const PLUGINS = [
 
 function scss() {
   return src(PATH.scssRoot)
-    .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+    .pipe(sass().on('error', sass.logError))
     .pipe(postcss(PLUGINS))
     .pipe(csscomb())
     .pipe(dest(PATH.cssFolder))
@@ -64,7 +64,7 @@ function scssDev() {
   pluginsForDevMode.splice(1,1)
 
   return src(PATH.scssRoot, {sourcemaps: true})
-    .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+    .pipe(sass().on('error', sass.logError))
     .pipe(postcss(pluginsForDevMode))
     .pipe(dest(PATH.cssFolder, {sourcemaps: true}))
     .pipe(browserSync.stream());
