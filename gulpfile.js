@@ -89,7 +89,7 @@ async function sync() {
 
 function watchFiles() {
   syncInit();
-  if (!option) watch(PATH.scssFiles, series(scss, scssMin));
+  if (!option) watch(PATH.scssFiles, series(scss));
   if (option === '--dev') watch(PATH.scssFiles, series(scssDev));
   if (option === '--css') watch(PATH.cssFiles, sync);
   watch(PATH.htmlFiles, sync);
@@ -132,7 +132,7 @@ function createStructure() {
 }
 
 task('comb', series(comb));
-task('scss', series(scss));
+task('scss', series(scss, scssMin));
 task('dev', series(scssDev));
 task('min', series(scssMin));
 task('cs', series(createStructure));
