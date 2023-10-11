@@ -72,11 +72,15 @@ function scssDev() {
 }
 
 function comb() {
-  return src(PATH.scssFiles).pipe(csscomb()).pipe(dest(PATH.scssFolder))
+  return src(PATH.scssFiles)
+    .pipe(csscomb())
+    .pipe(dest(PATH.scssFolder))
 }
 
 function compilePug() {
-  return src(PATH.pugRoot).pipe(pug()).pipe(dest(PATH.htmlFolder))
+  return src(PATH.pugRoot)
+    .pipe(pug({ pretty: true }))
+    .pipe(dest(PATH.htmlFolder))
 }
 
 function syncInit() {
