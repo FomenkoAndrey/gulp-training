@@ -90,41 +90,35 @@ function watchFiles() {
   watch(PATH.htmlFiles, sync)
   watch(PATH.jsFiles, sync)
 }
-
 function createStructure() {
-  let files = []
-  let scssFiles = []
+  const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header'];
 
-  const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
+  const scssFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`);
 
-  scssFileNames.forEach((fileName) => scssFiles.push(`${PATH.scssFolder}${fileName}.scss`))
-
-  files[0] = `${PATH.htmlFolder}index.html`
-  files[1] = `${PATH.cssFolder}style.css`
-  files[2] = `${PATH.jsFolder}main.js`
-  files[3] = scssFiles
+  const filePaths = [`${PATH.htmlFolder}index.html`, `${PATH.cssFolder}style.css`, `${PATH.jsFolder}main.js`, scssFiles];
 
   src('*.*', { read: false })
     .pipe(dest(PATH.scssFolder))
     .pipe(dest(PATH.cssFolder))
     .pipe(dest(PATH.jsFolder))
-    .pipe(dest(PATH.imgFolder))
+    .pipe(dest(PATH.imgFolder));
 
   return new Promise((resolve) =>
     setTimeout(() => {
-      for (let i = 0; i < file.length; i++)
-        if (!Array.isArray(file[i])) {
-          require('fs').writeFileSync(file[i], '')
-          console.log(file[i])
-        } else
-          for (let j = 0; j < file[i].length; j++) {
-            require('fs').writeFileSync(file[i][j], '')
-            console.log(file[i][j])
-          }
-
-      resolve(true)
+      filePaths.forEach((filePath) => {
+        if (Array.isArray(filePath)) {
+          filePath.forEach((subPath) => {
+            require('fs').writeFileSync(subPath, '');
+            console.log(subPath);
+          });
+        } else {
+          require('fs').writeFileSync(filePath, '');
+          console.log(filePath);
+        }
+      });
+      resolve(true);
     }, 1000)
-  )
+  );
 }
 
 task('comb', series(comb))
