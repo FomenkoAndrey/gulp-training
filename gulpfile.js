@@ -112,10 +112,11 @@ function watchFiles() {
 function createStructure() {
   const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
 
-  const scssAllFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.compileScss`)
+  const scssAllFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`)
 
   const filePaths = [
     `${PATH.htmlFolder}index.html`,
+    `${PATH.pugFolder}index.pug`,
     `${PATH.cssFolder}style.css`,
     `${PATH.jsFolder}main.js`,
     scssAllFiles
@@ -123,6 +124,7 @@ function createStructure() {
 
   src('*.*', { read: false })
     .pipe(dest(PATH.scssFolder))
+    .pipe(dest(PATH.pugFolder))
     .pipe(dest(PATH.cssFolder))
     .pipe(dest(PATH.jsFolder))
     .pipe(dest(PATH.imgFolder))
