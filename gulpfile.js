@@ -9,6 +9,7 @@ const rename = require('gulp-rename')
 const autoprefixer = require('autoprefixer')
 const mqpacker = require('css-mqpacker')
 const sortCSSmq = require('sort-css-media-queries')
+const pug = require('gulp-pug');
 
 const option = process.argv[3]
 
@@ -18,9 +19,12 @@ const PATH = {
   scssRoot: './assets/scss/style.scss',
   cssFolder: './assets/css/',
   cssFiles: './assets/css/*.css',
-  cssFile: './assets/css/style.css',
+  cssRoot: './assets/css/style.css',
   htmlFolder: './',
   htmlFiles: './*.html',
+  pugFolder: './templates/',
+  pugFiles: './templates/**/*.pug',
+  pugRoot: './templates/index.pug',
   jsFolder: './assets/js/',
   jsFiles: './assets/js/**/*.js',
   imgFolder: './assets/img/'
@@ -71,6 +75,12 @@ function comb() {
   return src(PATH.scssFiles).pipe(csscomb()).pipe(dest(PATH.scssFolder))
 }
 
+function compilePug() {
+  return src(PATH.pugRoot)
+      .pipe(pug())
+      .pipe(dest(PATH.htmlFolder));
+};
+
 function syncInit() {
   browserSync({
     server: { baseDir: './' },
@@ -88,8 +98,10 @@ function watchFiles() {
   if (option === '--dev') watch(PATH.scssFiles, series(scssDev))
   if (option === '--css') watch(PATH.cssFiles, sync)
   watch(PATH.htmlFiles, sync)
+  watch(PATH.pugFiles, series(compilePug, sync))
   watch(PATH.jsFiles, sync)
 }
+
 function createStructure() {
   const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
 
@@ -125,5 +137,6 @@ task('comb', series(comb))
 task('scss', series(scss, scssMin))
 task('dev', series(scssDev))
 task('min', series(scssMin))
+task('pug', series(compilePug))
 task('cs', series(createStructure))
 task('watch', watchFiles)
