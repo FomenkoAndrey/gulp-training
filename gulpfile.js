@@ -1,5 +1,6 @@
 const { task, series, parallel, src, dest, watch } = require('gulp')
 const sass = require('gulp-sass')(require('sass'))
+const replace = require('gulp-replace')
 const dc = require('postcss-discard-comments')
 const browserSync = require('browser-sync')
 const postcss = require('gulp-postcss')
@@ -14,21 +15,24 @@ const pug = require('gulp-pug')
 const option = process.argv[3]
 
 const PATH = {
-  scssFolder: './assets/scss/',
-  scssFiles: './assets/scss/**/*.scss',
-  scssRoot: './assets/scss/style.scss',
+  scssFolder: './src/scss/',
+  scssAllFiles: './src/scss/**/*.scss',
+  scssRootFile: './src/scss/style.scss',
+  pugFolder: './src/templates/',
+  pugAllFiles: './src/templates/**/*.pug',
+  pugRootFile: './src/templates/index.pug',
   cssFolder: './assets/css/',
-  cssFiles: './assets/css/*.css',
-  cssRoot: './assets/css/style.css',
+  cssAllFiles: './assets/css/*.css',
+  cssRootFile: './assets/css/style.css',
   htmlFolder: './',
-  htmlFiles: './*.html',
-  pugFolder: './templates/',
-  pugFiles: './templates/**/*.pug',
-  pugRoot: './templates/index.pug',
+  htmlAllFiles: './*.html',
   jsFolder: './assets/js/',
-  jsFiles: './assets/js/**/*.js',
-  imgFolder: './assets/img/'
+  jsAllFiles: './assets/js/**/*.js',
+  imgFolder: './assets/images/'
 }
+
+const SEARCH_IMAGE_REGEXP = /url\(.*\/images\/(.*)\.(png|jpg|gif|webp)/g
+const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2'
 
 const PLUGINS = [
   dc({ discardComments: true }),
@@ -39,51 +43,52 @@ const PLUGINS = [
   mqpacker({ sort: sortCSSmq })
 ]
 
-function scss() {
-  return src(PATH.scssRoot)
+function compileScss() {
+  return src(PATH.scssRootFile)
     .pipe(sass().on('error', sass.logError))
     .pipe(postcss(PLUGINS))
     .pipe(csscomb())
+    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(dest(PATH.cssFolder))
     .pipe(browserSync.stream())
 }
 
-function scssMin() {
+function compileScssMin() {
   const pluginsForMinify = [...PLUGINS, cssnano({ preset: 'default' })]
 
-  return src(PATH.scssRoot)
+  return src(PATH.scssRootFile)
     .pipe(sass().on('error', sass.logError))
     .pipe(csscomb())
+    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(postcss(pluginsForMinify))
     .pipe(rename({ suffix: '.min' }))
     .pipe(dest(PATH.cssFolder))
 }
 
-function scssDev() {
+function compileScssDev() {
   const pluginsForDevMode = [...PLUGINS]
 
   pluginsForDevMode.splice(1, 1)
 
-  return src(PATH.scssRoot, { sourcemaps: true })
+  return src(PATH.scssRootFile, { sourcemaps: true })
     .pipe(sass().on('error', sass.logError))
     .pipe(postcss(pluginsForDevMode))
+    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(dest(PATH.cssFolder, { sourcemaps: true }))
     .pipe(browserSync.stream())
 }
 
-function comb() {
-  return src(PATH.scssFiles)
-    .pipe(csscomb())
-    .pipe(dest(PATH.scssFolder))
-}
-
 function compilePug() {
-  return src(PATH.pugRoot)
+  return src(PATH.pugRootFile)
     .pipe(pug({ pretty: true }))
     .pipe(dest(PATH.htmlFolder))
 }
 
-function syncInit() {
+function comb() {
+  return src(PATH.scssAllFiles).pipe(csscomb()).pipe(dest(PATH.scssFolder))
+}
+
+function serverInit() {
   browserSync({
     server: { baseDir: './' },
     notify: false
@@ -95,21 +100,26 @@ async function sync() {
 }
 
 function watchFiles() {
-  syncInit()
-  if (!option) watch(PATH.scssFiles, series(scss))
-  if (option === '--dev') watch(PATH.scssFiles, series(scssDev))
-  if (option === '--css') watch(PATH.cssFiles, sync)
-  watch(PATH.htmlFiles, sync)
-  watch(PATH.pugFiles, series(compilePug, sync))
-  watch(PATH.jsFiles, sync)
+  serverInit()
+  if (!option) watch(PATH.scssAllFiles, series(compileScss))
+  if (option === '--dev') watch(PATH.scssAllFiles, series(compileScssDev))
+  if (option === '--css') watch(PATH.cssAllFiles, sync)
+  watch(PATH.htmlAllFiles, sync)
+  watch(PATH.pugAllFiles, series(compilePug, sync))
+  watch(PATH.jsAllFiles, sync)
 }
 
 function createStructure() {
   const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
 
-  const scssFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`)
+  const scssAllFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.compileScss`)
 
-  const filePaths = [`${PATH.htmlFolder}index.html`, `${PATH.cssFolder}style.css`, `${PATH.jsFolder}main.js`, scssFiles]
+  const filePaths = [
+    `${PATH.htmlFolder}index.html`,
+    `${PATH.cssFolder}style.css`,
+    `${PATH.jsFolder}main.js`,
+    scssAllFiles
+  ]
 
   src('*.*', { read: false })
     .pipe(dest(PATH.scssFolder))
@@ -136,9 +146,9 @@ function createStructure() {
 }
 
 task('comb', series(comb))
-task('scss', series(scss, scssMin))
-task('dev', series(scssDev))
-task('min', series(scssMin))
+task('scss', series(compileScss, compileScssMin))
+task('dev', series(compileScssDev))
+task('min', series(compileScssMin))
 task('pug', series(compilePug))
 task('cs', series(createStructure))
 task('watch', watchFiles)
