@@ -9,7 +9,7 @@ const rename = require('gulp-rename')
 const autoprefixer = require('autoprefixer')
 const mqpacker = require('css-mqpacker')
 const sortCSSmq = require('sort-css-media-queries')
-const pug = require('gulp-pug');
+const pug = require('gulp-pug')
 
 const option = process.argv[3]
 
@@ -76,10 +76,8 @@ function comb() {
 }
 
 function compilePug() {
-  return src(PATH.pugRoot)
-      .pipe(pug())
-      .pipe(dest(PATH.htmlFolder));
-};
+  return src(PATH.pugRoot).pipe(pug()).pipe(dest(PATH.htmlFolder))
+}
 
 function syncInit() {
   browserSync({
