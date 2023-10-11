@@ -91,34 +91,34 @@ function watchFiles() {
   watch(PATH.jsFiles, sync)
 }
 function createStructure() {
-  const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header'];
+  const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
 
-  const scssFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`);
+  const scssFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`)
 
-  const filePaths = [`${PATH.htmlFolder}index.html`, `${PATH.cssFolder}style.css`, `${PATH.jsFolder}main.js`, scssFiles];
+  const filePaths = [`${PATH.htmlFolder}index.html`, `${PATH.cssFolder}style.css`, `${PATH.jsFolder}main.js`, scssFiles]
 
   src('*.*', { read: false })
     .pipe(dest(PATH.scssFolder))
     .pipe(dest(PATH.cssFolder))
     .pipe(dest(PATH.jsFolder))
-    .pipe(dest(PATH.imgFolder));
+    .pipe(dest(PATH.imgFolder))
 
   return new Promise((resolve) =>
     setTimeout(() => {
       filePaths.forEach((filePath) => {
         if (Array.isArray(filePath)) {
           filePath.forEach((subPath) => {
-            require('fs').writeFileSync(subPath, '');
-            console.log(subPath);
-          });
+            require('fs').writeFileSync(subPath, '')
+            console.log(subPath)
+          })
         } else {
-          require('fs').writeFileSync(filePath, '');
-          console.log(filePath);
+          require('fs').writeFileSync(filePath, '')
+          console.log(filePath)
         }
-      });
-      resolve(true);
+      })
+      resolve(true)
     }, 1000)
-  );
+  )
 }
 
 task('comb', series(comb))
