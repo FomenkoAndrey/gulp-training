@@ -1,7 +1,7 @@
-@import 'normalize';
-
-@import 'presets/skins';
-@import 'presets/variables';
-
-@import 'common';
-@import 'sub/sub';
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
