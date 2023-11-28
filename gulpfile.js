@@ -31,8 +31,8 @@ const PATH = {
   imgFolder: './assets/images/'
 }
 
-const SEARCH_IMAGE_REGEXP = /url\(.*\/images\/(.*)\.(png|jpg|gif|webp)/g
-const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2'
+const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g;
+const REPLACEMENT_IMAGE_PATH = "url(../images/$1.$2)";
 
 const PLUGINS = [
   dc({ discardComments: true }),
