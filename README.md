@@ -139,18 +139,21 @@ gulp watch --css
 project/
   | index.html
   | assets/
+  |   | css/
+  |   |   | style.css
+  |   | js
+  |       | main.js
+  | src/
       | scss/
       |   | style.scss
       |   | _skin.scss
       |   | _variables.scss
       |   | _other-files.scss
-      | css/
-      |   | style.css
-      | js
-          | main.js
+      | templates/
+          | index.pug
 </pre>
 
-> При несоблюдении указанной структуры **_gulp-задачи_** работать не будут.  
+> При несоблюдении указанной структуры **_gulp-задачи_** работать не будут.
 > Вы можете самостоятельно изменить пути в **_gulpfile.js_**, но этот вариант не рекомендуется и помощь оказываться не будет.
 
 # 7. Остановка задачи watch
