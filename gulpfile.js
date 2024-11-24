@@ -1,3 +1,18 @@
+const originalWrite = process.stderr.write // Перехоплюємо потоки stdout та stderr
+
+process.stderr.write = function (chunk, ...args) {
+  const ignoreMessages = [
+    'The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0',
+    '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
+  ]
+
+  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) { // Ігноруємо повідомлення, які містять зазначені фрази
+    return // Нічого не робимо
+  }
+
+  return originalWrite.call(process.stderr, chunk, ...args) // Викликаємо стандартний метод для інших повідомлень
+}
+
 const { task, series, parallel, src, dest, watch } = require('gulp')
 const sass = require('gulp-sass')(require('sass'))
 const replace = require('gulp-replace')
@@ -31,8 +46,8 @@ const PATH = {
   imgFolder: './assets/images/'
 }
 
-const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g;
-const REPLACEMENT_IMAGE_PATH = "url(../images/$1.$2)";
+const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g
+const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2)'
 
 const PLUGINS = [
   dc({ discardComments: true }),
