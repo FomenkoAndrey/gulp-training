@@ -6,7 +6,8 @@ process.stderr.write = function (chunk, ...args) {
     '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
   ]
 
-  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) { // Ігноруємо повідомлення, які містять зазначені фрази
+  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) {
+    // Ігноруємо повідомлення, які містять зазначені фрази
     return // Нічого не робимо
   }
 
@@ -31,7 +32,7 @@ const option = process.argv[3]
 
 const PATH = {
   scssFolder: './src/scss/',
-  scssAllFiles: './src/scss/**/*.scss',
+  scssAllFiles: ['./src/scss/**/*.scss', '!**/_mixins-media.scss'], // Виключаємо _mixins-media.scss
   scssRootFile: './src/scss/style.scss',
   pugFolder: './src/templates/',
   pugAllFiles: './src/templates/**/*.pug',
@@ -46,8 +47,8 @@ const PATH = {
   imgFolder: './assets/images/'
 }
 
-const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g;
-const REPLACEMENT_IMAGE_PATH = "url(../images/$1.$2)";
+const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g
+const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2)'
 
 const PLUGINS = [
   dc({ discardComments: true }),
@@ -59,25 +60,27 @@ const PLUGINS = [
 ]
 
 function compileScss() {
-  return src(PATH.scssRootFile)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(postcss(PLUGINS))
-    .pipe(csscomb())
-    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
-    .pipe(dest(PATH.cssFolder))
-    .pipe(browserSync.stream())
+  return (
+    src(PATH.scssRootFile)
+      .pipe(sass().on('error', sass.logError))
+      .pipe(postcss(PLUGINS))
+      .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
+      .pipe(dest(PATH.cssFolder))
+      .pipe(browserSync.stream())
+  )
 }
 
 function compileScssMin() {
   const pluginsForMinify = [...PLUGINS, cssnano({ preset: 'default' })]
 
-  return src(PATH.scssRootFile)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(csscomb())
-    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
-    .pipe(postcss(pluginsForMinify))
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(dest(PATH.cssFolder))
+  return (
+    src(PATH.scssRootFile)
+      .pipe(sass().on('error', sass.logError))
+      .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
+      .pipe(postcss(pluginsForMinify))
+      .pipe(rename({ suffix: '.min' }))
+      .pipe(dest(PATH.cssFolder))
+  )
 }
 
 function compileScssDev() {
@@ -162,7 +165,7 @@ function createStructure() {
   )
 }
 
-task('comb', series(comb))
+task('comb', series(comb, compileScss, compileScssMin))
 task('scss', series(compileScss, compileScssMin))
 task('dev', series(compileScssDev))
 task('min', series(compileScssMin))
