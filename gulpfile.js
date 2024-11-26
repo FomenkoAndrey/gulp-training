@@ -6,7 +6,8 @@ process.stderr.write = function (chunk, ...args) {
     '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
   ]
 
-  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) { // Ігноруємо повідомлення, які містять зазначені фрази
+  // Ігноруємо повідомлення, які містять зазначені фрази
+  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) {
     return // Нічого не робимо
   }
 
@@ -31,7 +32,7 @@ const option = process.argv[3]
 
 const PATH = {
   scssFolder: './src/scss/',
-  scssAllFiles: './src/scss/**/*.scss',
+  scssAllFiles: ['./src/scss/**/*.scss', '!**/_mixins-media.scss'], // Виключаємо _mixins-media.scss
   scssRootFile: './src/scss/style.scss',
   pugFolder: './src/templates/',
   pugAllFiles: './src/templates/**/*.pug',
@@ -52,8 +53,7 @@ const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2)'
 const PLUGINS = [
   dc({ discardComments: true }),
   autoprefixer({
-    overrideBrowserslist: ['last 5 versions', '> 0.1%'],
-    cascade: true
+    overrideBrowserslist: ['last 5 versions', '> 0.1%']
   }),
   mqpacker({ sort: sortCSSmq })
 ]
@@ -62,7 +62,6 @@ function compileScss() {
   return src(PATH.scssRootFile)
     .pipe(sass().on('error', sass.logError))
     .pipe(postcss(PLUGINS))
-    .pipe(csscomb())
     .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(dest(PATH.cssFolder))
     .pipe(browserSync.stream())
@@ -73,7 +72,6 @@ function compileScssMin() {
 
   return src(PATH.scssRootFile)
     .pipe(sass().on('error', sass.logError))
-    .pipe(csscomb())
     .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(postcss(pluginsForMinify))
     .pipe(rename({ suffix: '.min' }))
@@ -111,12 +109,12 @@ function serverInit() {
 }
 
 async function sync() {
-  await browserSync.reload()
+  browserSync.reload()
 }
 
 function watchFiles() {
   serverInit()
-  if (!option) watch(PATH.scssAllFiles, series(compileScss))
+  if (!option) watch(PATH.scssAllFiles, series(compileScss, compileScssMin))
   if (option === '--dev') watch(PATH.scssAllFiles, series(compileScssDev))
   if (option === '--css') watch(PATH.cssAllFiles, sync)
   watch(PATH.htmlAllFiles, sync)
@@ -162,8 +160,8 @@ function createStructure() {
   )
 }
 
-task('comb', series(comb))
-task('scss', series(compileScss, compileScssMin))
+task('comb', series(comb, compileScss, compileScssMin))
+task('scss', series(comb, compileScss, compileScssMin))
 task('dev', series(compileScssDev))
 task('min', series(compileScssMin))
 task('pug', series(compilePug))
