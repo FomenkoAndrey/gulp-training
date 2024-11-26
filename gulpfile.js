@@ -6,8 +6,8 @@ process.stderr.write = function (chunk, ...args) {
     '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
   ]
 
+  // Ігноруємо повідомлення, які містять зазначені фрази
   if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) {
-    // Ігноруємо повідомлення, які містять зазначені фрази
     return // Нічого не робимо
   }
 
@@ -59,27 +59,23 @@ const PLUGINS = [
 ]
 
 function compileScss() {
-  return (
-    src(PATH.scssRootFile)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(postcss(PLUGINS))
-      .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
-      .pipe(dest(PATH.cssFolder))
-      .pipe(browserSync.stream())
-  )
+  return src(PATH.scssRootFile)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(postcss(PLUGINS))
+    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
+    .pipe(dest(PATH.cssFolder))
+    .pipe(browserSync.stream())
 }
 
 function compileScssMin() {
   const pluginsForMinify = [...PLUGINS, cssnano({ preset: 'default' })]
 
-  return (
-    src(PATH.scssRootFile)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
-      .pipe(postcss(pluginsForMinify))
-      .pipe(rename({ suffix: '.min' }))
-      .pipe(dest(PATH.cssFolder))
-  )
+  return src(PATH.scssRootFile)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
+    .pipe(postcss(pluginsForMinify))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(dest(PATH.cssFolder))
 }
 
 function compileScssDev() {
@@ -118,7 +114,7 @@ async function sync() {
 
 function watchFiles() {
   serverInit()
-  if (!option) watch(PATH.scssAllFiles, series(compileScss))
+  if (!option) watch(PATH.scssAllFiles, series(compileScss, compileScssMin))
   if (option === '--dev') watch(PATH.scssAllFiles, series(compileScssDev))
   if (option === '--css') watch(PATH.cssAllFiles, sync)
   watch(PATH.htmlAllFiles, sync)
