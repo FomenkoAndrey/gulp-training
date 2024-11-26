@@ -53,8 +53,7 @@ const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2)'
 const PLUGINS = [
   dc({ discardComments: true }),
   autoprefixer({
-    overrideBrowserslist: ['last 5 versions', '> 0.1%'],
-    cascade: true
+    overrideBrowserslist: ['last 5 versions', '> 0.1%']
   }),
   mqpacker({ sort: sortCSSmq })
 ]
@@ -114,7 +113,7 @@ function serverInit() {
 }
 
 async function sync() {
-  await browserSync.reload()
+  browserSync.reload()
 }
 
 function watchFiles() {
@@ -166,7 +165,7 @@ function createStructure() {
 }
 
 task('comb', series(comb, compileScss, compileScssMin))
-task('scss', series(compileScss, compileScssMin))
+task('scss', series(comb, compileScss, compileScssMin))
 task('dev', series(compileScssDev))
 task('min', series(compileScssMin))
 task('pug', series(compilePug))
