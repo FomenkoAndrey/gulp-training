@@ -111,7 +111,7 @@ function serverInit() {
 }
 
 async function sync() {
-  browserSync.reload()
+  await browserSync.reload()
 }
 
 function watchFiles() {
