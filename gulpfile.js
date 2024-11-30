@@ -44,7 +44,7 @@ const PATH = {
   htmlAllFiles: './*.html',
   jsFolder: './assets/js/',
   jsAllFiles: './assets/js/**/*.js',
-  imageFolder: './assets/images/',
+  imagesFolder: './assets/images/',
   vendorsFolder: './assets/vendors/'
 }
 
@@ -176,7 +176,7 @@ function createStructure() {
     .pipe(dest(PATH.pugFolder))
     .pipe(dest(PATH.cssFolder))
     .pipe(dest(PATH.jsFolder))
-    .pipe(dest(PATH.imageFolder))
+    .pipe(dest(PATH.imagesFolder))
     .pipe(dest(PATH.vendorsFolder))
 
   return new Promise((resolve) =>
