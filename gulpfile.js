@@ -44,10 +44,11 @@ const PATH = {
   htmlAllFiles: './*.html',
   jsFolder: './assets/js/',
   jsAllFiles: './assets/js/**/*.js',
-  imgFolder: './assets/images/'
+  imageFolder: './assets/images/',
+  vendorsFolder: './assets/vendors/'
 }
 
-const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpg|gif|webp|svg)['"]?\)/g
+const SEARCH_IMAGE_REGEXP = /url\(['"]?.*\/images\/(.*?)\.(png|jpe?g|gif|webp|svg)['"]?\)/g
 const REPLACEMENT_IMAGE_PATH = 'url(../images/$1.$2)'
 
 const PLUGINS = [
@@ -123,9 +124,37 @@ function watchFiles() {
 }
 
 function createStructure() {
-  const scssFileNames = ['style', '_variables', '_skin', '_common', '_footer', '_header']
+  // Структура SCSS файлів по папках за патерном 7-1
+  const scssFiles = {
+    abstracts: [
+      '_index',
+      '_variables', // змінні проекту
+      '_skin', // кольори, тіні, градієнти
+      '_mixins', // міксини
+      '_mixins-media', // міксини для медіа-запитів
+      '_extends' // плейсхолдери
+    ],
+    base: [
+      '_index',
+      '_common', // базові стилі
+      '_typography' // типографіка
+    ],
+    layout: ['_index', '_header', '_footer', '_main'],
+    components: [
+      '_index'
+      // тут будуть компоненти
+    ],
+    root: [
+      'style' // головний файл
+    ]
+  }
 
-  const scssAllFiles = scssFileNames.map((fileName) => `${PATH.scssFolder}${fileName}.scss`)
+  // Створюємо масив шляхів для всіх SCSS файлів
+  const scssAllFiles = Object.entries(scssFiles).flatMap(([folder, files]) => {
+    return files.map((fileName) =>
+      folder === 'root' ? `${PATH.scssFolder}${fileName}.scss` : `${PATH.scssFolder}${folder}/${fileName}.scss`
+    )
+  })
 
   const filePaths = [
     `${PATH.htmlFolder}index.html`,
@@ -135,22 +164,39 @@ function createStructure() {
     scssAllFiles
   ]
 
+  // Створюємо папки для SCSS
+  const scssFolders = ['abstracts', 'base', 'layout', 'components']
+  scssFolders.forEach((folder) => {
+    require('fs').mkdirSync(`${PATH.scssFolder}${folder}`, { recursive: true })
+  })
+
+  // Створюємо основні папки проекту
   src('*.*', { read: false })
     .pipe(dest(PATH.scssFolder))
     .pipe(dest(PATH.pugFolder))
     .pipe(dest(PATH.cssFolder))
     .pipe(dest(PATH.jsFolder))
-    .pipe(dest(PATH.imgFolder))
+    .pipe(dest(PATH.imageFolder))
+    .pipe(dest(PATH.vendorsFolder))
 
   return new Promise((resolve) =>
     setTimeout(() => {
       filePaths.forEach((filePath) => {
         if (Array.isArray(filePath)) {
           filePath.forEach((subPath) => {
+            // Створюємо папку, якщо її немає
+            const dir = subPath.substring(0, subPath.lastIndexOf('/'))
+            if (!require('fs').existsSync(dir)) {
+              require('fs').mkdirSync(dir, { recursive: true })
+            }
             require('fs').writeFileSync(subPath, '')
             console.log(subPath)
           })
         } else {
+          const dir = filePath.substring(0, filePath.lastIndexOf('/'))
+          if (!require('fs').existsSync(dir)) {
+            require('fs').mkdirSync(dir, { recursive: true })
+          }
           require('fs').writeFileSync(filePath, '')
           console.log(filePath)
         }
