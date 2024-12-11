@@ -1,10 +1,7 @@
 const originalWrite = process.stderr.write // Перехоплюємо потоки stdout та stderr
 
 process.stderr.write = function (chunk, ...args) {
-  const ignoreMessages = [
-    'The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0',
-    '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
-  ]
+  const ignoreMessages = ['[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated']
 
   // Ігноруємо повідомлення, які містять зазначені фрази
   if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) {
