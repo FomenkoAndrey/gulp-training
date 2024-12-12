@@ -137,20 +137,38 @@ gulp watch --css
 
 <pre>
 project/
-  | index.html
-  | assets/
-  |   | css/
-  |   |   | style.css
-  |   | js
-  |       | main.js
-  | src/
-      | scss/
-      |   | style.scss
-      |   | _skin.scss
-      |   | _variables.scss
-      |   | _other-files.scss
-      | templates/
-          | index.pug
+├── assets/
+│   ├── css/
+│   │   └── style.css
+│   ├── images/
+│   ├── js/
+│   │   └── main.js
+│   └── vendors/
+├── src/
+│   ├── scss/
+│   │   ├── abstracts/
+│   │   │   ├── _index.scss
+│   │   │   └── _extends.scss
+│   │   │   ├── _mixins.scss
+│   │   │   ├── _mixins-media.scss
+│   │   │   ├── _skin.scss
+│   │   │   ├── _variables.scss
+│   │   ├── base/
+│   │   │   ├── _index.scss
+│   │   │   ├── _common.scss
+│   │   │   └── _typography.scss
+│   │   ├── components/
+│   │   │   └── _index.scss
+│   │   ├── layout/
+│   │   │   ├── _index.scss
+│   │   │   ├── _footer.scss
+│   │   │   ├── _header.scss
+│   │   │   └── _main.scss
+│   │   └── style.scss
+│   └── templates/
+│       └── index.pug
+├── index.html
+└── gulpfile.js
 </pre>
 
 > При несоблюдении указанной структуры **_gulp-задачи_** работать не будут.
