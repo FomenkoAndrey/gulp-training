@@ -5,5 +5,95 @@
 
 body{
   margin:0;
+  background-color:#ffffff;
   font-family:Arial, Helvetica, sans-serif;
+}
+
+@media (320px <= width <= 479px){
+  body{
+    padding:5px;
+    background-color:#a0a0a0;
+    font-size:11px;
+  }
+}
+
+@media (width >= 320px){
+  body{
+    font-size:14px;
+    line-height:1.4;
+  }
+}
+
+@media (480px < width <= 767px){
+  body{
+    padding:12px;
+    background-color:#c0c0c0;
+    font-weight:400;
+  }
+}
+
+@media (width > 600px){
+  body{
+    letter-spacing:0.5px;
+  }
+}
+
+@media (768px <= width < 1024px){
+  body{
+    padding:20px;
+    background-color:#d0d0d0;
+    font-weight:500;
+  }
+}
+
+@media (width >= 768px){
+  body{
+    font-size:16px;
+    line-height:1.5;
+  }
+}
+
+@media (width >= 1024px){
+  body{
+    max-width:1200px;
+    margin:0 auto;
+    font-size:18px;
+    line-height:1.6;
+  }
+}
+
+@media (width >= 1200px){
+  body{
+    padding:40px;
+    font-size:20px;
+    line-height:1.8;
+  }
+}
+
+@media (width <= 1200px){
+  body{
+    padding:10px;
+    background-color:#f0f0f0;
+  }
+}
+
+@media (width <= 768px){
+  body{
+    padding:15px;
+    background-color:#e0e0e0;
+  }
+}
+
+@media (width <= 480px){
+  body{
+    padding:8px;
+    background-color:#b0b0b0;
+    font-size:12px;
+  }
+}
+
+@media (width < 400px){
+  body{
+    text-align:center;
+  }
 }
