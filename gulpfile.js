@@ -1,4 +1,20 @@
-const originalWrite = process.stderr.write // Перехоплюємо потоки stdout та stderr
+import { task, series, src, dest, watch } from 'gulp'
+import gulpSass from 'gulp-sass'
+import * as sass from 'sass'
+import replace from 'gulp-replace'
+import dc from 'postcss-discard-comments'
+import browserSync from 'browser-sync'
+import postcss from 'gulp-postcss'
+import csscomb from 'gulp-csscomb'
+import cssnano from 'cssnano'
+import rename from 'gulp-rename'
+import autoprefixer from 'autoprefixer'
+import sortMediaQueries from 'postcss-sort-media-queries'
+import pug from 'gulp-pug'
+import fs from 'fs'
+
+// Перехоплюємо потоки stdout та stderr
+const originalWrite = process.stderr.write
 
 process.stderr.write = function (chunk, ...args) {
   const ignoreMessages = [
@@ -14,19 +30,11 @@ process.stderr.write = function (chunk, ...args) {
   return originalWrite.call(process.stderr, chunk, ...args) // Викликаємо стандартний метод для інших повідомлень
 }
 
-const { task, series, parallel, src, dest, watch } = require('gulp')
-const sass = require('gulp-sass')(require('sass'))
-const replace = require('gulp-replace')
-const dc = require('postcss-discard-comments')
-const browserSync = require('browser-sync')
-const postcss = require('gulp-postcss')
-const csscomb = require('gulp-csscomb')
-const cssnano = require('cssnano')
-const rename = require('gulp-rename')
-const autoprefixer = require('autoprefixer')
-const mqpacker = require('css-mqpacker')
-const sortCSSmq = require('sort-css-media-queries')
-const pug = require('gulp-pug')
+// Динамічний імпорт для sort-css-media-queries
+const { default: sortCSSmq } = await import('sort-css-media-queries')
+
+// Налаштування Sass компілятора
+const sassCompiler = gulpSass(sass)
 
 const option = process.argv[3]
 
@@ -56,12 +64,14 @@ const PLUGINS = [
   autoprefixer({
     overrideBrowserslist: ['last 5 versions', '> 0.1%']
   }),
-  mqpacker({ sort: sortCSSmq })
+  sortMediaQueries({
+    sort: sortCSSmq
+  })
 ]
 
 function compileScss() {
   return src(PATH.scssRootFile)
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sassCompiler().on('error', sassCompiler.logError))
     .pipe(postcss(PLUGINS))
     .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(dest(PATH.cssFolder))
@@ -72,7 +82,7 @@ function compileScssMin() {
   const pluginsForMinify = [...PLUGINS, cssnano({ preset: 'default' })]
 
   return src(PATH.scssRootFile)
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sassCompiler().on('error', sassCompiler.logError))
     .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(postcss(pluginsForMinify))
     .pipe(rename({ suffix: '.min' }))
@@ -85,7 +95,7 @@ function compileScssDev() {
   pluginsForDevMode.splice(1, 1)
 
   return src(PATH.scssRootFile, { sourcemaps: true })
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sassCompiler().on('error', sassCompiler.logError))
     .pipe(postcss(pluginsForDevMode))
     .pipe(replace(SEARCH_IMAGE_REGEXP, REPLACEMENT_IMAGE_PATH))
     .pipe(dest(PATH.cssFolder, { sourcemaps: true }))
@@ -167,7 +177,7 @@ function createStructure() {
   // Створюємо папки для SCSS
   const scssFolders = ['abstracts', 'base', 'layout', 'components']
   scssFolders.forEach((folder) => {
-    require('fs').mkdirSync(`${PATH.scssFolder}${folder}`, { recursive: true })
+    fs.mkdirSync(`${PATH.scssFolder}${folder}`, { recursive: true })
   })
 
   // Створюємо основні папки проекту
@@ -186,18 +196,18 @@ function createStructure() {
           filePath.forEach((subPath) => {
             // Створюємо папку, якщо її немає
             const dir = subPath.substring(0, subPath.lastIndexOf('/'))
-            if (!require('fs').existsSync(dir)) {
-              require('fs').mkdirSync(dir, { recursive: true })
+            if (!fs.existsSync(dir)) {
+              fs.mkdirSync(dir, { recursive: true })
             }
-            require('fs').writeFileSync(subPath, '')
+            fs.writeFileSync(subPath, '')
             console.log(subPath)
           })
         } else {
           const dir = filePath.substring(0, filePath.lastIndexOf('/'))
-          if (!require('fs').existsSync(dir)) {
-            require('fs').mkdirSync(dir, { recursive: true })
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true })
           }
-          require('fs').writeFileSync(filePath, '')
+          fs.writeFileSync(filePath, '')
           console.log(filePath)
         }
       })
@@ -206,10 +216,17 @@ function createStructure() {
   )
 }
 
-task('comb', series(comb, compileScss, compileScssMin))
-task('scss', series(comb, compileScss, compileScssMin))
-task('dev', series(compileScssDev))
-task('min', series(compileScssMin))
-task('pug', series(compilePug))
-task('cs', series(createStructure))
-task('watch', watchFiles)
+// Експорт функцій для використання як задач
+export { compileScss, compileScssMin, compileScssDev, compilePug, comb, serverInit, sync, watchFiles, createStructure }
+
+// Композитні задачі
+export const scss = series(comb, compileScss, compileScssMin)
+export const min = compileScssMin
+export const dev = compileScssDev
+export const combTask = series(comb, compileScss, compileScssMin)
+export const pugTask = compilePug
+export const cs = createStructure
+export const startWatch = watchFiles
+
+// Дефолтна задача
+export default watchFiles
