@@ -1,4 +1,4 @@
-import { task, series, src, dest, watch } from 'gulp'
+import { series, src, dest, watch } from 'gulp'
 import gulpSass from 'gulp-sass'
 import * as sass from 'sass'
 import replace from 'gulp-replace'
@@ -12,23 +12,6 @@ import autoprefixer from 'autoprefixer'
 import sortMediaQueries from 'postcss-sort-media-queries'
 import pug from 'gulp-pug'
 import fs from 'fs'
-
-// Перехоплюємо потоки stdout та stderr
-const originalWrite = process.stderr.write
-
-process.stderr.write = function (chunk, ...args) {
-  const ignoreMessages = [
-    'The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0',
-    '[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated'
-  ]
-
-  // Ігноруємо повідомлення, які містять зазначені фрази
-  if (ignoreMessages.some((msg) => chunk.toString().includes(msg))) {
-    return // Нічого не робимо
-  }
-
-  return originalWrite.call(process.stderr, chunk, ...args) // Викликаємо стандартний метод для інших повідомлень
-}
 
 // Динамічний імпорт для sort-css-media-queries
 const { default: sortCSSmq } = await import('sort-css-media-queries')
