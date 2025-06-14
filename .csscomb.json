@@ -1,4 +1,5 @@
 {
+  "exclude": [".git/**", "node_modules/**", "bower_components/**"],
   "remove-empty-rulesets": true,
   "always-semicolon": true,
   "color-case": "lower",
@@ -7,6 +8,7 @@
   "element-case": "lower",
   "eof-newline": true,
   "leading-zero": true,
+  "lines-between-rulesets": 1,
   "quotes": "double",
   "sort-order-fallback": "abc",
   "space-before-colon": "",
@@ -22,21 +24,8 @@
   "strip-spaces": true,
   "tab-size": true,
   "unitless-zero": true,
-  "vendor-prefix-align": true,
-  "exclude": [
-    ".git/**",
-    "node_modules/**",
-    "bower_components/**"
-  ],
   "sort-order": [
-    [
-      "position",
-      "z-index",
-      "top",
-      "right",
-      "bottom",
-      "left"
-    ],
+    ["position", "z-index", "top", "right", "bottom", "left"],
     [
       "display",
       "visibility",
@@ -89,6 +78,7 @@
       "-webkit-flex-wrap",
       "-ms-flex-wrap",
       "flex-wrap",
+      "gap",
       "-webkit-box-pack",
       "-moz-box-pack",
       "-ms-flex-pack",
